@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible software defect without sharing secrets or restricted data.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "BatteryGuard is simulation/research only. Do not attach real private datasets, evaluator tokens, or hidden lifetime labels."
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include commands, synthetic inputs, and expected/actual behavior.
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Does this affect a safety, blind-data, or authority boundary?
+      options: ["No", "Possibly — I will use private vulnerability reporting"]
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, install method, and relevant optional extras.

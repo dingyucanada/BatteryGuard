@@ -1,0 +1,91 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          version: "0.11.28"
+          enable-cache: true
+      - name: Install Python
+        run: uv python install "${{ matrix.python-version }}"
+      - name: Sync locked environment
+        run: uv sync --frozen --extra dev --python "${{ matrix.python-version }}"
+      - name: Lint
+        if: matrix.python-version == '3.13'
+        run: uv run ruff check src tests apps
+      - name: Strict type checking
+        if: matrix.python-version == '3.13'
+        run: uv run mypy src/batteryguard
+      - name: Test with coverage
+        run: uv run pytest --cov=batteryguard --cov-report=term --cov-fail-under=82
+      - name: Offline no-reveal smoke
+        run: uv run batteryguard demo --cell random --seed 42 --offline --no-reveal
+
+  container-smoke:
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate Compose
+        env:
+          BATTERYGUARD_REVEAL_TOKEN: ci-validation-placeholder-not-a-secret
+        run: docker compose -f docker/compose.yaml config --quiet
+      - name: Build runtime image
+        run: docker build -f docker/Dockerfile -t batteryguard:ci .
+      - name: Verify non-root runtime and CLI
+        run: |
+          test "$(docker run --rm --entrypoint id batteryguard:ci -u)" != "0"
+          docker run --rm batteryguard:ci batteryguard demo --cell random --seed 42 --offline --no-reveal
+      - name: Smoke API
+        run: |
+          docker run --detach --name batteryguard-api --publish 127.0.0.1:8000:8000 batteryguard:ci
+          trap 'docker rm --force batteryguard-api >/dev/null 2>&1 || true' EXIT
+          for attempt in {1..60}; do
+            if curl --fail --silent --show-error http://127.0.0.1:8000/health; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs batteryguard-api
+          exit 1
+      - name: Smoke Streamlit
+        run: |
+          docker run --detach --name batteryguard-ui --publish 127.0.0.1:8501:8501 \
+            batteryguard:ci streamlit run apps/streamlit_app.py --server.address 0.0.0.0
+          trap 'docker rm --force batteryguard-ui >/dev/null 2>&1 || true' EXIT
+          for attempt in {1..60}; do
+            if curl --fail --silent --show-error http://127.0.0.1:8501/_stcore/health; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs batteryguard-ui
+          exit 1

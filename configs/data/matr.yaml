@@ -1,0 +1,6 @@
+dataset_id: matr-v1
+source: data/raw/matr
+early_cycles: 30
+eol_threshold: 0.80
+split_strategy: protocol_holdout
+seed: 42

@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use BatteryGuard in research, please cite this software and clearly state the version and synthetic/real dataset used."
+title: "BatteryGuard"
+type: software
+version: 0.1.0
+date-released: 2026-08-21
+authors:
+  - family-names: "Ding"
+    given-names: "Yu"
+repository-code: "https://github.com/dingyucanada/BatteryGuard"
+url: "https://dingyucanada.github.io/BatteryGuard/"
+license: Apache-2.0
+keywords:
+  - battery lifetime prediction
+  - conformal prediction
+  - out-of-distribution detection
+  - charging policy simulation
+  - safety shield
+  - evidence ledger
+abstract: >-
+  BatteryGuard is an offline, simulation-only research prototype for auditable
+  early-cycle lifetime estimation, uncertainty and OOD-aware abstention,
+  transparent charging-policy simulation, deterministic safety gating, and
+  a controlled synthetic outcome-reveal and access-control rehearsal. The
+  public fixture is not an independent blind benchmark.

@@ -1,0 +1,5 @@
+backend: surrogate
+simulator_version: twin0-v1
+ambient_temperature_c: 25.0
+initial_soc: 0.10
+cache: true

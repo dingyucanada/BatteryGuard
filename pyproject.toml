@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "batteryguard"
+version = "0.1.0"
+description = "Audit-ready early battery-life prediction and safe charging-policy simulation research prototype"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Yu Ding" }]
+dependencies = [
+  "fastapi>=0.116,<1",
+  "httpx>=0.28,<1",
+  "numpy>=2.0,<3",
+  "pandas>=2.2,<3",
+  "plotly>=6.0,<7",
+  "pyarrow>=18,<24",
+  "pydantic>=2.10,<3",
+  "pyyaml>=6.0,<7",
+  "scikit-learn>=1.6,<2",
+  "scipy>=1.14,<2",
+  "streamlit>=1.45,<2",
+  "typer>=0.16,<1",
+  "uvicorn>=0.34,<1",
+  "xgboost>=3.0,<4; sys_platform == 'darwin'",
+  "xgboost-cpu>=3.0,<4; sys_platform == 'linux' or sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+pybamm = ["pybamm>=25.4,<27"]
+dev = [
+  "mypy>=1.15,<2",
+  "pandas-stubs>=2.2,<3",
+  "pytest>=8.3,<10",
+  "pytest-cov>=6,<8",
+  "ruff>=0.11,<1",
+]
+
+[project.scripts]
+batteryguard = "batteryguard.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/batteryguard"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers --disable-warnings"
+testpaths = ["tests"]
+markers = [
+  "integration: end-to-end or API integration tests",
+  "safety: deterministic safety and fault-injection tests",
+]
+filterwarnings = [
+  "ignore:Using `httpx` with `starlette.testclient` is deprecated:starlette.exceptions.StarletteDeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501", "B008"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_unused_ignores = true
+exclude = ["tests", "apps"]
+
+[[tool.mypy.overrides]]
+module = ["scipy.*", "sklearn.*", "yaml"]
+ignore_missing_imports = true

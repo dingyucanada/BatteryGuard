@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-CN" data-language="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="BatteryGuard：用早期循环证据进行寿命预测、不确定性与 OOD 判断、安全充电策略仿真和可审计 synthetic 揭示演练的离线研究原型。"
+    />
+    <meta name="theme-color" content="#08110f" />
+    <meta name="color-scheme" content="dark" />
+    <title>BatteryGuard — 早期寿命智能与安全充电研究原型</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">
+      <span class="lang-zh">跳至主要内容</span>
+      <span class="lang-en">Skip to main content</span>
+    </a>
+
+    <div class="boundary-strip" role="note">
+      <span class="boundary-dot" aria-hidden="true"></span>
+      <strong>
+        <span class="lang-zh">仿真 / 研究专用</span>
+        <span class="lang-en">Simulation / Research Only</span>
+      </strong>
+      <span class="boundary-copy">
+        <span class="lang-zh">无硬件控制路径 · 禁止连接真实充电设备</span>
+        <span class="lang-en">No hardware-control path · Never connect to charging equipment</span>
+      </span>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner shell">
+        <a class="brand" href="#top" aria-label="BatteryGuard home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-name">BatteryGuard</span>
+          <span class="brand-version">v0.1</span>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          <span class="sr-only lang-zh">打开导航</span>
+          <span class="sr-only lang-en">Open navigation</span>
+          <i></i><i></i>
+        </button>
+
+        <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+          <a href="#loop"><span class="lang-zh">闭环</span><span class="lang-en">Loop</span></a>
+          <a href="#capabilities"><span class="lang-zh">能力</span><span class="lang-en">Capabilities</span></a>
+          <a href="#strategy"><span class="lang-zh">策略实验</span><span class="lang-en">Strategy Lab</span></a>
+          <a href="#evidence"><span class="lang-zh">证据</span><span class="lang-en">Evidence</span></a>
+          <a href="#verification"><span class="lang-zh">验证</span><span class="lang-en">Verification</span></a>
+        </nav>
+
+        <div class="language-switch" role="group" aria-label="Language">
+          <button type="button" data-language-button="zh" aria-pressed="true">中</button>
+          <button type="button" data-language-button="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top">
+        <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><span>EARLY EVIDENCE</span><i></i><span>SAFE DECISION</span></div>
+            <h1>
+              <span class="lang-zh">让电池早期数据，<br /><em>变成可审计的研发判断。</em></span>
+              <span class="lang-en">Turn early battery data<br /><em>into auditable R&amp;D decisions.</em></span>
+            </h1>
+            <p class="hero-lede">
+              <span class="lang-zh">
+                BatteryGuard 读取前 30 个有效循环，输出校准寿命区间、OOD 与拒答、风险指纹，
+                并在数字孪生和确定性安全护栏内比较充电策略。
+              </span>
+              <span class="lang-en">
+                BatteryGuard reads the first 30 valid cycles, returns a calibrated lifetime
+                interval, OOD and abstention status, then compares charging policies inside a
+                deterministic simulation and safety envelope.
+              </span>
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#loop">
+                <span class="lang-zh">查看完整闭环</span>
+                <span class="lang-en">Explore the full loop</span>
+                <span aria-hidden="true">↘</span>
+              </a>
+              <a class="button button-secondary" href="#boundary">
+                <span class="lang-zh">先读安全边界</span>
+                <span class="lang-en">Read the safety boundary</span>
+              </a>
+              <a class="button button-secondary" href="https://github.com/dingyucanada/BatteryGuard">
+                <span class="lang-zh">打开 GitHub 仓库</span>
+                <span class="lang-en">Open the GitHub repository</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <div class="hero-proof" aria-label="Project properties">
+              <div><strong>30</strong><span class="lang-zh">早期循环</span><span class="lang-en">early cycles</span></div>
+              <div><strong>90%</strong><span class="lang-zh">名义区间目标</span><span class="lang-en">nominal interval target</span></div>
+              <div><strong>0</strong><span class="lang-zh">硬件端点</span><span class="lang-en">hardware endpoints</span></div>
+            </div>
+          </div>
+
+          <div class="console-wrap" aria-label="Synthetic demo snapshot">
+            <div class="console-topline">
+              <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span>BG / DECISION CONSOLE</span>
+              <span class="console-live"><i></i> OFFLINE</span>
+            </div>
+            <div class="console-body">
+              <div class="console-context">
+                <div>
+                  <span class="micro-label">PUBLIC SYNTHETIC CELL</span>
+                  <strong>BG-0071</strong>
+                </div>
+                <div>
+                  <span class="micro-label">OBSERVED</span>
+                  <strong>30 <small>CYCLES</small></strong>
+                </div>
+                <span class="tag tag-amber">SYNTHETIC</span>
+              </div>
+
+              <div class="interval-card">
+                <div class="interval-heading">
+                  <span class="lang-zh">80% EOL 寿命估计</span>
+                  <span class="lang-en">80% EOL lifetime estimate</span>
+                  <span class="tag tag-green">NO ABSTAIN</span>
+                </div>
+                <div class="point-estimate"><strong>≈866</strong><span>CYCLES</span></div>
+                <div class="interval-track" aria-label="Synthetic interval 716 to 1015 cycles">
+                  <i class="track-base"></i><i class="track-range"></i><i class="track-point"></i>
+                </div>
+                <div class="interval-values"><span>716</span><span>90% INTERVAL</span><span>1,015</span></div>
+              </div>
+
+              <div class="console-signals">
+                <div class="signal-row">
+                  <span class="signal-icon">Q</span>
+                  <span><b>DATA QUALITY</b><small>Cell-level split · early window locked</small></span>
+                  <strong class="status-good">PASS</strong>
+                </div>
+                <div class="signal-row">
+                  <span class="signal-icon">U</span>
+                  <span><b>UNCERTAINTY / OOD</b><small>Conformal interval · distribution gate</small></span>
+                  <strong class="status-good">READY</strong>
+                </div>
+                <div class="signal-row">
+                  <span class="signal-icon">S</span>
+                  <span><b>SAFETY SHIELD</b><small>40°C · FAST reaches 45.406°C</small></span>
+                  <strong class="status-bad">REJECT</strong>
+                </div>
+              </div>
+
+              <div class="console-footer">
+                <span>SHA-256 EVIDENCE CHAIN</span>
+                <strong><i></i> VALID</strong>
+              </div>
+            </div>
+            <p class="console-caption">
+              <span class="lang-zh">锁定 synthetic 演示快照；不代表真实电芯性能。</span>
+              <span class="lang-en">Locked synthetic demo snapshot; not real-cell performance.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="signal-band" aria-label="Core guarantees">
+        <div class="shell signal-band-inner">
+          <span>CPU ONLY</span><i></i><span>NO LLM</span><i></i><span>NO RUNTIME NETWORK</span><i></i>
+          <span>NO HARDWARE CONTROL</span><i></i><span>APPEND-ONLY EVIDENCE</span>
+        </div>
+      </section>
+
+      <section class="section section-loop" id="loop">
+        <div class="shell">
+          <div class="section-heading split-heading">
+            <div>
+              <span class="section-index">01 / CLOSED LOOP</span>
+              <h2><span class="lang-zh">不是一个分数，<br />而是一条可复核的决策链。</span><span class="lang-en">Not a score.<br />A reviewable decision chain.</span></h2>
+            </div>
+            <p>
+              <span class="lang-zh">每一步都有明确输入、失败路径和版本证据。模型负责提出，安全护栏拥有最终裁决权。</span>
+              <span class="lang-en">Every step has explicit inputs, failure paths, and versioned evidence. Models propose; the safety shield decides.</span>
+            </p>
+          </div>
+
+          <div class="pipeline" role="list">
+            <article class="pipeline-step" role="listitem">
+              <span class="step-number">01</span><span class="step-glyph">∿</span>
+              <h3><span class="lang-zh">早期证据</span><span class="lang-en">Early evidence</span></h3>
+              <p><span class="lang-zh">前 30 个有效循环；质量、范围和泄漏硬检查。</span><span class="lang-en">First 30 valid cycles with quality, range, and leakage gates.</span></p>
+            </article>
+            <article class="pipeline-step" role="listitem">
+              <span class="step-number">02</span><span class="step-glyph">±</span>
+              <h3><span class="lang-zh">校准预测</span><span class="lang-en">Calibrated prediction</span></h3>
+              <p><span class="lang-zh">B0/B1/B2 模型阶梯，加上 Split Conformal 区间。</span><span class="lang-en">B0/B1/B2 model ladder plus a split-conformal interval.</span></p>
+            </article>
+            <article class="pipeline-step" role="listitem">
+              <span class="step-number">03</span><span class="step-glyph">◎</span>
+              <h3><span class="lang-zh">OOD 与拒答</span><span class="lang-en">OOD &amp; abstention</span></h3>
+              <p><span class="lang-zh">证据超出分布或区间过宽时，系统主动收缩结论。</span><span class="lang-en">Out-of-distribution or weak evidence narrows what the system will claim.</span></p>
+            </article>
+            <article class="pipeline-step" role="listitem">
+              <span class="step-number">04</span><span class="step-glyph">◇</span>
+              <h3><span class="lang-zh">策略仿真</span><span class="lang-en">Policy simulation</span></h3>
+              <p><span class="lang-zh">Twin-0 比较时间、退化代理、温度与能量损失。</span><span class="lang-en">Twin-0 compares time, degradation proxy, heat, and energy loss.</span></p>
+            </article>
+            <article class="pipeline-step pipeline-step-shield" role="listitem">
+              <span class="step-number">05</span><span class="step-glyph">▣</span>
+              <h3><span class="lang-zh">安全裁决</span><span class="lang-en">Safety decision</span></h3>
+              <p><span class="lang-zh">确定性约束输出 ALLOW、REJECT 或 FALLBACK。</span><span class="lang-en">Deterministic constraints return ALLOW, REJECT, or FALLBACK.</span></p>
+            </article>
+            <article class="pipeline-step" role="listitem">
+              <span class="step-number">06</span><span class="step-glyph">#</span>
+              <h3><span class="lang-zh">受控揭示演练</span><span class="lang-en">Controlled reveal</span></h3>
+              <p><span class="lang-zh">token 门禁演练追加公开 synthetic 结果；它不是独立盲测。</span><span class="lang-en">A token-gated rehearsal appends a public synthetic outcome; it is not an independent blind test.</span></p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-capabilities" id="capabilities">
+        <div class="shell">
+          <div class="section-heading centered-heading">
+            <span class="section-index">02 / FOUR LAYERS</span>
+            <h2><span class="lang-zh">把“预测”升级为可执行的研发证据。</span><span class="lang-en">Upgrade prediction into actionable R&amp;D evidence.</span></h2>
+            <p><span class="lang-zh">每一层都能独立失败，并以透明、保守的方式降级。</span><span class="lang-en">Each layer can fail independently and degrade transparently.</span></p>
+          </div>
+
+          <div class="capability-grid">
+            <article class="capability-card">
+              <div class="card-top"><span class="card-code">PRED / 01</span><span class="card-symbol">±</span></div>
+              <h3><span class="lang-zh">寿命区间，不是假精度</span><span class="lang-en">A lifetime interval, not false precision</span></h3>
+              <p><span class="lang-zh">强基线先行；点估计始终与校准区间、覆盖目标和证据 ID 一起返回。</span><span class="lang-en">Strong baselines first; every point estimate ships with a calibrated interval, target coverage, and evidence ID.</span></p>
+              <ul>
+                <li><span class="lang-zh">按 cell_id 分组</span><span class="lang-en">Grouped by cell_id</span></li>
+                <li>Split Conformal</li>
+                <li><span class="lang-zh">固定评测切分</span><span class="lang-en">Frozen evaluation splits</span></li>
+              </ul>
+            </article>
+            <article class="capability-card">
+              <div class="card-top"><span class="card-code">TRUST / 02</span><span class="card-symbol">◎</span></div>
+              <h3><span class="lang-zh">知道何时不该回答</span><span class="lang-en">Know when not to answer</span></h3>
+              <p><span class="lang-zh">数据质量、OOD、区间宽度和协议完整性共同驱动显式拒答，而不是隐藏不确定性。</span><span class="lang-en">Quality, OOD, interval width, and protocol completeness drive explicit abstention instead of hiding uncertainty.</span></p>
+              <ul>
+                <li>Mahalanobis OOD</li>
+                <li><span class="lang-zh">风险—覆盖权衡</span><span class="lang-en">Risk–coverage trade-off</span></li>
+                <li><span class="lang-zh">可观测风险指纹</span><span class="lang-en">Observable risk fingerprint</span></li>
+              </ul>
+            </article>
+            <article class="capability-card">
+              <div class="card-top"><span class="card-code">TWIN / 03</span><span class="card-symbol">◇</span></div>
+              <h3><span class="lang-zh">比较权衡，不宣称唯一最优</span><span class="lang-en">Compare trade-offs, not one universal optimum</span></h3>
+              <p><span class="lang-zh">FAST、BALANCED、LIFE 与保守 FALLBACK 在离线孪生中评估；只显示安全可行的 Pareto 候选。</span><span class="lang-en">FAST, BALANCED, LIFE, and conservative FALLBACK are evaluated offline; only safe feasible candidates enter the Pareto set.</span></p>
+              <ul>
+                <li><span class="lang-zh">确定性 Twin-0</span><span class="lang-en">Deterministic Twin-0</span></li>
+                <li><span class="lang-zh">可选 PyBaMM 适配器</span><span class="lang-en">Optional PyBaMM adapter</span></li>
+                <li><span class="lang-zh">四目标比较</span><span class="lang-en">Four-objective comparison</span></li>
+              </ul>
+            </article>
+            <article class="capability-card capability-card-accent">
+              <div class="card-top"><span class="card-code">SHIELD / 04</span><span class="card-symbol">▣</span></div>
+              <h3><span class="lang-zh">机器学习无权写入 ALLOW</span><span class="lang-en">Machine learning cannot write ALLOW</span></h3>
+              <p><span class="lang-zh">SafetyShield 独立检查完整轨迹和硬约束。缺失、NaN、求解失败或越界都会关闭乐观路径。</span><span class="lang-en">SafetyShield independently checks complete trajectories and hard limits. Missing, NaN, failed, or violating states close the optimistic path.</span></p>
+              <ul>
+                <li><span class="lang-zh">电压 / 电流 / SOC</span><span class="lang-en">Voltage / current / SOC</span></li>
+                <li><span class="lang-zh">温度 / 温升 / 温升速率</span><span class="lang-en">Temperature / rise / rise rate</span></li>
+                <li><span class="lang-zh">析锂风险余量代理</span><span class="lang-en">Plating-risk margin proxy</span></li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-strategy" id="strategy">
+        <div class="shell">
+          <div class="strategy-header">
+            <div class="section-heading">
+              <span class="section-index">03 / STRATEGY LAB</span>
+              <h2><span class="lang-zh">升温，让最快策略失去资格。</span><span class="lang-en">Raise the heat. The fastest policy loses eligibility.</span></h2>
+              <p><span class="lang-zh">切换环境温度，查看同一锁定 synthetic 场景中的确定性安全反转。</span><span class="lang-en">Switch ambient temperature to inspect a deterministic safety reversal in the same locked synthetic scenario.</span></p>
+            </div>
+            <div class="temperature-switch" role="group" aria-label="Ambient temperature">
+              <button type="button" data-temperature="25" aria-pressed="true">25°C <small>BASE</small></button>
+              <button type="button" data-temperature="40" aria-pressed="false">40°C <small>HOT</small></button>
+            </div>
+          </div>
+
+          <div class="strategy-board" data-active-temperature="25">
+            <div class="strategy-axis" aria-hidden="true"><span>CHARGE TIME →</span><span>THERMAL / DEGRADATION CARE →</span></div>
+            <div class="strategy-cards">
+              <article class="strategy-card" data-strategy="fast" data-state-25="allow" data-state-40="reject">
+                <div class="strategy-title"><span class="strategy-rank">F</span><div><span>FAST</span><small>MSCC / V1</small></div><strong class="strategy-status">ALLOW</strong></div>
+                <div class="strategy-metric"><span class="lang-zh">充电时间</span><span class="lang-en">Charge time</span><strong>26.5 <small>MIN</small></strong></div>
+                <div class="strategy-metric"><span class="lang-zh">最高温度</span><span class="lang-en">Max temperature</span><strong class="temperature-value" data-value-25="30.406" data-value-40="45.406">30.406 <small>°C</small></strong></div>
+                <div class="mini-bars"><i style="--bar: 31%"></i><i style="--bar: 88%"></i><i style="--bar: 92%"></i></div>
+                <p class="strategy-note"><span class="note-25"><span class="lang-zh">默认环境下满足全部硬约束。</span><span class="lang-en">Within all hard limits at baseline.</span></span><span class="note-40"><span class="lang-zh">超过 45.0°C 硬阈值，SafetyShield 拒绝。</span><span class="lang-en">Exceeds the 45.0°C hard limit; SafetyShield rejects.</span></span></p>
+              </article>
+              <article class="strategy-card" data-strategy="balanced" data-state-25="allow" data-state-40="allow">
+                <div class="strategy-title"><span class="strategy-rank">B</span><div><span>BALANCED</span><small>MSCC / V1</small></div><strong class="strategy-status">ALLOW</strong></div>
+                <div class="strategy-metric"><span class="lang-zh">充电时间</span><span class="lang-en">Charge time</span><strong>36.6 <small>MIN</small></strong></div>
+                <div class="strategy-metric"><span class="lang-zh">最高温度</span><span class="lang-en">Max temperature</span><strong class="temperature-value" data-value-25="28.466" data-value-40="43.466">28.466 <small>°C</small></strong></div>
+                <div class="mini-bars"><i style="--bar: 48%"></i><i style="--bar: 60%"></i><i style="--bar: 59%"></i></div>
+                <p class="strategy-note"><span class="note-25"><span class="lang-zh">速度、热和退化代理之间的折中。</span><span class="lang-en">A trade-off across speed, heat, and degradation proxy.</span></span><span class="note-40"><span class="lang-zh">高温场景仍在当前仿真安全边界内。</span><span class="lang-en">Remains inside the simulated safety envelope when hot.</span></span></p>
+              </article>
+              <article class="strategy-card" data-strategy="life" data-state-25="allow" data-state-40="allow">
+                <div class="strategy-title"><span class="strategy-rank">L</span><div><span>LIFE</span><small>MSCC / V1</small></div><strong class="strategy-status">ALLOW</strong></div>
+                <div class="strategy-metric"><span class="lang-zh">充电时间</span><span class="lang-en">Charge time</span><strong>61.9 <small>MIN</small></strong></div>
+                <div class="strategy-metric"><span class="lang-zh">最高温度</span><span class="lang-en">Max temperature</span><strong class="temperature-value" data-value-25="26.403" data-value-40="41.403">26.403 <small>°C</small></strong></div>
+                <div class="mini-bars"><i style="--bar: 88%"></i><i style="--bar: 28%"></i><i style="--bar: 30%"></i></div>
+                <p class="strategy-note"><span class="note-25"><span class="lang-zh">较低电流、热负担和退化代理。</span><span class="lang-en">Lower current, thermal load, and degradation proxy.</span></span><span class="note-40"><span class="lang-zh">高温时保留更大的热安全余量。</span><span class="lang-en">Retains more thermal margin in the hot scenario.</span></span></p>
+              </article>
+            </div>
+            <div class="strategy-verdict" role="status" aria-live="polite">
+              <span class="verdict-icon">▣</span>
+              <div class="verdict-25"><strong><span class="lang-zh">25°C：三种候选均被允许</span><span class="lang-en">25°C: all three candidates are allowed</span></strong><small><span class="lang-zh">Pareto 前沿保留不同目标间的真实权衡。</span><span class="lang-en">The Pareto front preserves genuine objective trade-offs.</span></small></div>
+              <div class="verdict-40"><strong><span class="lang-zh">40°C：FAST 被拒绝</span><span class="lang-en">40°C: FAST is rejected</span></strong><small><span class="lang-zh">BALANCED 与 LIFE 保留；系统同时命名保守 FALLBACK。</span><span class="lang-en">BALANCED and LIFE remain; a conservative FALLBACK is also named.</span></small></div>
+              <span class="verdict-hash">SAFETY CASE / SHA-256</span>
+            </div>
+          </div>
+          <p class="data-disclaimer"><span aria-hidden="true">＊</span><span class="lang-zh">以上数值来自确定性 Twin-0 synthetic 演示，并非特定商业电芯的验证结果或充电建议。</span><span class="lang-en">Values are from the deterministic Twin-0 synthetic demo—not validation of a commercial cell or charging advice.</span></p>
+        </div>
+      </section>
+
+      <section class="section section-evidence" id="evidence">
+        <div class="shell evidence-grid">
+          <div class="evidence-copy">
+            <div class="section-heading">
+              <span class="section-index">04 / CONTROLLED REVEAL</span>
+              <h2><span class="lang-zh">先锁定结论，<br />再揭晓答案。</span><span class="lang-en">Lock the claim.<br />Then reveal the answer.</span></h2>
+              <p><span class="lang-zh">运行时 public-cell JSON 在 token 鉴权前省略 <code>cycle_life</code>；但本站 HTML、885 结果和确定性生成器均公开。这里验证 API 访问控制与追加语义，不提供真实标签保密。</span><span class="lang-en">Runtime public-cell JSON omits <code>cycle_life</code> before token authorization, but this HTML, the 885 outcome, and the deterministic generator are public. This demonstrates API access control and append semantics—not real label secrecy.</span></p>
+            </div>
+            <div class="evidence-principles">
+              <div><span>01</span><p><strong><span class="lang-zh">预测先提交</span><span class="lang-en">Prediction commits first</span></strong><small><span class="lang-zh">点估计、区间、OOD 与版本写入账本。</span><span class="lang-en">Estimate, interval, OOD, and versions enter the ledger.</span></small></p></div>
+              <div><span>02</span><p><strong><span class="lang-zh">运行时载荷省略标签</span><span class="lang-en">Runtime payload omits label</span></strong><small><span class="lang-zh">错误 token、重复请求和序列化旁路均被拒绝；公开源码本身不是保密边界。</span><span class="lang-en">Wrong tokens, repeat requests, and serialization bypasses fail; public source is not a secrecy boundary.</span></small></p></div>
+              <div><span>03</span><p><strong><span class="lang-zh">结果只追加</span><span class="lang-en">Outcome only appends</span></strong><small><span class="lang-zh">成功与失败都成为不可静默覆盖的证据。</span><span class="lang-en">Success and failure both become non-silent evidence.</span></small></p></div>
+            </div>
+          </div>
+
+          <div class="reveal-demo">
+            <div class="reveal-header"><span>PUBLIC SYNTHETIC WALKTHROUGH / BG-0071</span><span class="tag tag-amber">NOT BLIND</span></div>
+            <div class="reveal-stage" id="reveal-stage" data-revealed="false">
+              <div class="hidden-result">
+                <span class="micro-label">ACTUAL CYCLE LIFE</span>
+                <div class="redacted-value" aria-label="Visual mask over a public demo value"><i></i><i></i><i></i></div>
+                <p><span class="lang-zh">视觉遮罩（不是保密控件）</span><span class="lang-en">Visual mask—not a security control</span></p>
+              </div>
+              <div class="revealed-result">
+                <span class="micro-label">ACTUAL CYCLE LIFE</span>
+                <div class="actual-value">885 <small>CYCLES</small></div>
+                <div class="reveal-measures"><span><small>ABS ERROR</small><strong>19.293</strong></span><span><small>INTERVAL</small><strong class="status-good">COVERED</strong></span></div>
+              </div>
+            </div>
+            <button class="reveal-button" type="button" aria-controls="reveal-stage" aria-expanded="false">
+              <span class="reveal-button-closed"><span class="lang-zh">展示已公开 synthetic 结果</span><span class="lang-en">Show public synthetic result</span></span>
+              <span class="reveal-button-open"><span class="lang-zh">恢复视觉遮罩</span><span class="lang-en">Reset visual mask</span></span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <p class="data-disclaimer"><span aria-hidden="true">＊</span><span class="lang-zh">885 已直接内嵌在本页源码中；按钮不读取 token，也不提供任何保密保证。</span><span class="lang-en">885 is embedded directly in this page source; the button reads no token and provides no secrecy guarantee.</span></p>
+            <div class="ledger-chain" aria-label="Append-only evidence chain">
+              <div><span>001</span><i></i><strong>PREDICTION</strong><small>HASH 4C…A1</small></div>
+              <div><span>002</span><i></i><strong>POLICY SET</strong><small>HASH 91…F7</small></div>
+              <div><span>003</span><i></i><strong>REVEAL</strong><small>APPEND ONLY</small></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-verification" id="verification">
+        <div class="shell">
+          <div class="section-heading split-heading">
+            <div>
+              <span class="section-index">05 / SOFTWARE EVIDENCE</span>
+              <h2><span class="lang-zh">可复现的软件验收，<br />不包装成科学验证。</span><span class="lang-en">Reproducible software gates,<br />not dressed up as scientific validation.</span></h2>
+            </div>
+            <p><span class="lang-zh">v0.1.0 锁定 synthetic fixture 的发布快照。真实数据、跨协议覆盖和电芯级标定仍需独立研究。</span><span class="lang-en">The v0.1.0 release snapshot uses a locked synthetic fixture. Real data, protocol transfer, and cell-specific calibration remain separate research work.</span></p>
+          </div>
+
+          <div class="verification-grid">
+            <article><span class="verification-value">112</span><h3><span class="lang-zh">自动化测试</span><span class="lang-en">automated tests</span></h3><p>Unit · integration · regression · privacy · safety</p><strong>PASS</strong></article>
+            <article><span class="verification-value">85.95<small>%</small></span><h3><span class="lang-zh">语句覆盖率</span><span class="lang-en">statement coverage</span></h3><p><span class="lang-zh">发布门槛 ≥ 82%</span><span class="lang-en">Release gate ≥ 82%</span></p><strong>PASS</strong></article>
+            <article><span class="verification-value">5<small>×</small></span><h3><span class="lang-zh">确定性演练</span><span class="lang-en">deterministic rehearsals</span></h3><p>Seeds 42 · 43 · 44 · 45 · 46</p><strong>PASS</strong></article>
+            <article><span class="verification-value">200</span><h3>API / UI HEALTH</h3><p>FastAPI /health · Streamlit /_stcore/health</p><strong>PASS</strong></article>
+          </div>
+
+          <div class="synthetic-results">
+            <div class="results-heading">
+              <div><span class="tag tag-amber">SYNTHETIC LOCKED TEST · n=8 · 2026-08-21</span><h3><span class="lang-zh">模型阶梯快照</span><span class="lang-en">Model-ladder snapshot</span></h3></div>
+              <p><span class="lang-zh">仅证明评测代码和比较流程可运行，不证明对真实电池的泛化。</span><span class="lang-en">Evidence that evaluation code runs—not that results generalize to real batteries.</span> <a href="https://github.com/dingyucanada/BatteryGuard/blob/main/docs/TEST_REPORT.md">TEST_REPORT ↗</a></p>
+            </div>
+            <div class="results-table" role="table" aria-label="Synthetic model results">
+              <div class="results-row results-head" role="row"><span role="columnheader">MODEL</span><span role="columnheader">MAE</span><span role="columnheader">RMSE</span><span role="columnheader">SPEARMAN</span></div>
+              <div class="results-row" role="row"><strong role="cell">B0 / MEDIAN</strong><span role="cell">180.625</span><span role="cell">202.727</span><span role="cell">0.000</span></div>
+              <div class="results-row" role="row"><strong role="cell">B1 / RIDGE</strong><span role="cell">63.200</span><span role="cell">70.431</span><span role="cell">0.905</span></div>
+              <div class="results-row results-selected" role="row"><strong role="cell">B2 / XGBOOST <small>SELECTED</small></strong><span role="cell">33.691</span><span role="cell">40.228</span><span role="cell">0.952</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-boundary" id="boundary">
+        <div class="shell boundary-panel">
+          <div class="boundary-head">
+            <span class="boundary-kicker"><i></i> HARD BOUNDARY</span>
+            <h2><span class="lang-zh">这不是 BMS。<br />也不是充电控制器。</span><span class="lang-en">This is not a BMS.<br />It is not a charging controller.</span></h2>
+            <p><span class="lang-zh">BatteryGuard 是一个离线、软件专用的研发原型。仓库故意不包含硬件传输、设备 SDK、CAN、充电协议或执行端点。</span><span class="lang-en">BatteryGuard is an offline, software-only research prototype. The repository intentionally contains no hardware transport, device SDK, CAN, charger protocol, or actuation endpoint.</span></p>
+          </div>
+          <div class="boundary-rules">
+            <div><span>×</span><p><strong><span class="lang-zh">不连接真实设备</span><span class="lang-en">No real-device connection</span></strong><small><span class="lang-zh">充电机、循环仪、BMS、车辆、电池架或储能系统均不在范围内。</span><span class="lang-en">Chargers, cyclers, BMS, vehicles, racks, and storage systems are out of scope.</span></small></p></div>
+            <div><span>×</span><p><strong><span class="lang-zh">不声称认证或量产就绪</span><span class="lang-en">No certification or production-readiness claim</span></strong><small><span class="lang-zh">真实实验前仍需独立验证、HIL、网络安全和完整安全生命周期。</span><span class="lang-en">Independent validation, HIL, cybersecurity, and a full safety lifecycle are required before physical experiments.</span></small></p></div>
+            <div><span>×</span><p><strong><span class="lang-zh">不把代理变量当作机理证明</span><span class="lang-en">No proxy-as-mechanism claim</span></strong><small><span class="lang-zh">风险指纹与析锂余量是可观测关联/代理，不证明 SEI、LAM、LLI 或真实析锂。</span><span class="lang-en">Risk fingerprints and plating margin are associations/proxies—not proof of SEI, LAM, LLI, or real plating.</span></small></p></div>
+            <div><span>×</span><p><strong><span class="lang-zh">synthetic demo 不是科学验证</span><span class="lang-en">Synthetic demo is not scientific validation</span></strong><small><span class="lang-zh">真实 MATR/Severson 数据未随仓库分发；数据许可与复现实验需另行完成。</span><span class="lang-en">Real MATR/Severson data is not redistributed; licensing and scientific replication remain separate.</span></small></p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing-section">
+        <div class="shell closing-inner">
+          <span class="section-index">BATTERYGUARD / V0.1.0</span>
+          <h2><span class="lang-zh">预测它。质疑它。<br /><em>在允许之前，验证它。</em></span><span class="lang-en">Predict it. Question it.<br /><em>Verify it before allowing it.</em></span></h2>
+          <a class="button button-primary" href="#top"><span class="lang-zh">返回顶部</span><span class="lang-en">Back to top</span><span aria-hidden="true">↑</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand-name">BatteryGuard</span></div>
+        <p><span class="lang-zh">开源、可审计的早期寿命与安全策略研发原型。</span><span class="lang-en">An open, audit-ready early-life and safe-policy research prototype.</span></p>
+        <div><span>© <span id="current-year">2026</span></span><span>SIMULATION / RESEARCH ONLY</span><span>NO ANALYTICS</span></div>
+      </div>
+    </footer>
+  </body>
+</html>

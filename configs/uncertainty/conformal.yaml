@@ -1,0 +1,3 @@
+method: split_conformal
+alpha: 0.10
+finite_sample_correction: true

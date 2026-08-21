@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a scoped improvement to the simulation/research prototype.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Research or operator problem
+      description: Describe the decision or workflow that is currently hard.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Boundary check
+      options:
+        - label: This proposal does not add hardware actuation.
+          required: true
+        - label: This proposal preserves SafetyShield as the sole `ALLOW` authority.
+          required: true
+        - label: I will distinguish synthetic observations from real-cell claims.
+          required: true

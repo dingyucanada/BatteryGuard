@@ -1,0 +1,57 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      BATTERYGUARD_OFFLINE: "1"
+      BATTERYGUARD_REVEAL_TOKEN: ${BATTERYGUARD_REVEAL_TOKEN:?Set a high-entropy BATTERYGUARD_REVEAL_TOKEN before starting Compose}
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+      PYBAMM_DISABLE_TELEMETRY: "true"
+    ports:
+      - "127.0.0.1:8000:8000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    volumes:
+      - api-artifacts:/app/artifacts
+  ui:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: ["streamlit", "run", "apps/streamlit_app.py", "--server.address", "0.0.0.0"]
+    environment:
+      BATTERYGUARD_OFFLINE: "1"
+      BATTERYGUARD_REVEAL_TOKEN: ${BATTERYGUARD_REVEAL_TOKEN:?Set a high-entropy BATTERYGUARD_REVEAL_TOKEN before starting Compose}
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+      PYBAMM_DISABLE_TELEMETRY: "true"
+    ports:
+      - "127.0.0.1:8501:8501"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    volumes:
+      - ui-artifacts:/app/artifacts
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=3)
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  api-artifacts:
+  ui-artifacts:

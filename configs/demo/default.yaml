@@ -1,0 +1,6 @@
+offline: true
+seed: 42
+hidden_cells: 6
+early_cycles: 30
+ambient_temperature_options_c: [15.0, 25.0, 35.0, 40.0]
+reveal_token_env: BATTERYGUARD_REVEAL_TOKEN

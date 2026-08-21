@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: https://github.com/dingyucanada/BatteryGuard/security/advisories/new
+    about: Report evaluator-token, hidden-label, ledger-integrity, or authority-boundary vulnerabilities privately.
