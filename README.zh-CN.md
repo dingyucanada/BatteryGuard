@@ -56,7 +56,7 @@ uv run batteryguard demo --cell random --seed 42 --offline --reveal
 
 ## 当前工程证据
 
-0.1.0 release candidate 的带日期验证快照覆盖单元、集成、回归、隐私、发布加固与安全测试，并通过 Ruff、严格 Mypy 与非 root Linux ARM64 容器的 CLI/API/UI smoke test。CI 已配置 Python 3.11–3.13 矩阵和标准 Dockerfile 冷构建门禁；确切测试数、覆盖率与本机 Docker 网络限制见 [验证报告](docs/TEST_REPORT.md)。
+0.1.0 release candidate 的带日期验证快照覆盖单元、集成、回归、隐私、发布加固与安全测试，并通过 Ruff、严格 Mypy 与非 root Linux ARM64 容器的 CLI/API/UI smoke test。首次绿色远端 CI——commit [`e2b64a8e0861771ce3c59e3e71bb62420169f3b6`](https://github.com/dingyucanada/BatteryGuard/commit/e2b64a8e0861771ce3c59e3e71bb62420169f3b6) 上的 [GitHub Actions run 32449835428](https://github.com/dingyucanada/BatteryGuard/actions/runs/32449835428)——进一步通过了 Python 3.11–3.13 矩阵，以及标准 Dockerfile 的 non-root CLI/API/UI smoke。确切测试数、覆盖率、本机 Docker 网络限制与远端证据见 [验证报告](docs/TEST_REPORT.md)。
 
 合成 locked test（仅 8 个合成测试 cell）上，B0/B1/B2 的 MAE 分别为 180.625、63.200、33.691 cycles。名义 90% split-conformal 区间在这 8 个合成 cell 上观测到 100% coverage，平均宽度 298.505 cycles。这些数字只证明离线软件夹具可复现，不能外推为真实电芯、MATR、跨协议或跨化学体系表现。
 

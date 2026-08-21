@@ -8,7 +8,9 @@ Scope: offline simulation/research prototype; no hardware control
 
 BatteryGuard's complete offline path was implemented and exercised: grouped early-cycle data, leakage gates, B0/B1/B2 prediction, split-conformal uncertainty, Mahalanobis OOD and abstention, risk fingerprinting, deterministic policy simulation, independent safety veto, Pareto selection, a controlled synthetic reveal, and a hash-chained append-only evidence ledger.
 
-All local source, package, and runtime smoke gates passed. The standard Dockerfile's cold online dependency fetch was environment-blocked on this host and remains a CI release gate, as recorded below. The numerical results use only the bundled deterministic synthetic fixture and are evidence of software behavior, not battery-science validity.
+All local source, package, and runtime smoke gates passed. The standard Dockerfile's cold online dependency fetch was environment-blocked on this host, as recorded below; the same Dockerfile and its non-root CLI/API/UI smoke path subsequently passed on the first green remote CI run. The numerical results use only the bundled deterministic synthetic fixture and are evidence of software behavior, not battery-science validity.
+
+First green remote CI: [GitHub Actions run 32449835428](https://github.com/dingyucanada/BatteryGuard/actions/runs/32449835428), commit [`e2b64a8e0861771ce3c59e3e71bb62420169f3b6`](https://github.com/dingyucanada/BatteryGuard/commit/e2b64a8e0861771ce3c59e3e71bb62420169f3b6), completed 2026-08-21. Python 3.11, 3.12, and 3.13 all passed their locked-environment tests and offline no-reveal smoke; Python 3.13 also passed Ruff and strict Mypy. The dependent `container-smoke` job passed Compose validation, the standard Dockerfile build, non-root identity and CLI verification, FastAPI `/health`, and Streamlit `/_stcore/health`.
 
 ## Automated gates
 
@@ -16,6 +18,7 @@ All local source, package, and runtime smoke gates passed. The standard Dockerfi
 | --- | --- | --- |
 | Unit/integration/regression/privacy/safety | `uv run pytest -q` | PASS — 112 tests |
 | Statement coverage | `uv run pytest --cov=batteryguard --cov-fail-under=82` | PASS — 85.95% |
+| Remote Python matrix | GitHub Actions run `32449835428` | PASS — Python 3.11, 3.12, and 3.13 at commit `e2b64a8e0861771ce3c59e3e71bb62420169f3b6` |
 | Lint/import rules | `uv run ruff check src tests apps` | PASS |
 | Strict type checking | `uv run mypy src/batteryguard` | PASS — 70 source files |
 | Locked environment | `uv sync --frozen --extra dev` | PASS |
@@ -28,7 +31,8 @@ All local source, package, and runtime smoke gates passed. The standard Dockerfi
 | Controlled synthetic reveal | seed 42, cell `BG-0071` | PASS — explicit token, covered, ledger chain valid |
 | FastAPI process and health | `GET /health` | PASS — HTTP 200 |
 | Streamlit process and health | `GET /_stcore/health` | PASS — `ok` |
-| Standard Dockerfile cold build | `docker build -f docker/Dockerfile ...` | ENVIRONMENT-BLOCKED — Docker Desktop's external package connection stalled; no source/lock error observed |
+| Standard Dockerfile cold build (local Docker Desktop) | `docker build -f docker/Dockerfile ...` | ENVIRONMENT-BLOCKED — Docker Desktop's external package connection stalled; no source/lock error observed |
+| Standard Dockerfile + non-root container smoke (remote CI) | GitHub Actions `container-smoke` | PASS — build, CLI, API, and Streamlit UI in run `32449835428` |
 | Hash-verified Linux ARM64 runtime assembly | temporary multistage builder + `uv.lock` wheel hashes | PASS — image `sha256:28f1dcb3…095d`, Python 3.11.15, XGBoost CPU 3.2.0, no wheelhouse in final image |
 | Non-root container identity | image config and `id -u` | PASS — `USER batteryguard`, UID 10001 |
 | Hardened container API/CLI/UI smoke | no-reveal demo, `/health`, `/_stcore/health` | PASS — read-only root, all capabilities dropped, `no-new-privileges` |
@@ -58,7 +62,7 @@ For the selected B2 model, the nominal 90% split-conformal interval had 100% cov
 - HTTP ingestion accepts only relative directories contained under `data/raw`; absolute paths, traversal, symlink escapes, and blank values are rejected without echoing a host path.
 - The evidence JSONL hash chain is anchored by an atomically replaced `.head` checkpoint, which detects a clean deletion of complete tail records as well as ordinary in-chain mutation.
 - Runtime telemetry is disabled by default for Streamlit and the optional PyBaMM backend. The static walkthrough's reveal button is a visual demonstration only: the 885-cycle outcome is embedded directly in the public HTML and no token is read.
-- The local Docker Desktop external network repeatedly stalled during the ordinary `uv sync --frozen` build step. To avoid treating an old image as evidence, the smoke-tested Linux ARM64 image was assembled from freshly downloaded, lockfile-selected wheels with pip hash verification in a temporary multi-stage builder; the wheelhouse was discarded before the runtime stage. This validates the final source, dependency versions, non-root runtime, CLI, API, UI, and hardening flags, but not the standard Dockerfile's cold online fetch on this host. The CI workflow retains that ordinary Dockerfile build as the release gate.
+- The local Docker Desktop external network repeatedly stalled during the ordinary `uv sync --frozen` build step. To avoid treating an old image as evidence, the smoke-tested Linux ARM64 image was assembled from freshly downloaded, lockfile-selected wheels with pip hash verification in a temporary multi-stage builder; the wheelhouse was discarded before the runtime stage. This validates the final source, dependency versions, non-root runtime, CLI, API, UI, and hardening flags, but not the standard Dockerfile's cold online fetch on this host. The ordinary Dockerfile build was independently validated by the first green remote CI run `32449835428` at commit `e2b64a8e0861771ce3c59e3e71bb62420169f3b6`.
 
 ## Boundaries and remaining scientific work
 

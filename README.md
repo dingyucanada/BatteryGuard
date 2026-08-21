@@ -55,7 +55,7 @@ Without that environment variable, each process uses an undisclosed ephemeral to
 
 ## Verification snapshot
 
-The 0.1.0 release-candidate verification snapshot includes unit, integration, regression, privacy, release-hardening, and safety tests, plus Ruff and strict Mypy checks. CI is configured to exercise Python 3.11–3.13 and the standard Dockerfile's non-root CLI/API/UI smoke path; its remote result remains a release gate until the first GitHub run completes. See [docs/TEST_REPORT.md](docs/TEST_REPORT.md) for the dated test count, coverage, commands, locked synthetic metrics, and limitations.
+The 0.1.0 release-candidate verification snapshot includes unit, integration, regression, privacy, release-hardening, and safety tests, plus Ruff and strict Mypy checks. The first green remote CI run, [GitHub Actions run 32449835428](https://github.com/dingyucanada/BatteryGuard/actions/runs/32449835428) at commit [`e2b64a8e0861771ce3c59e3e71bb62420169f3b6`](https://github.com/dingyucanada/BatteryGuard/commit/e2b64a8e0861771ce3c59e3e71bb62420169f3b6), passed Python 3.11–3.13 and the standard Dockerfile's non-root CLI/API/UI smoke path. See [docs/TEST_REPORT.md](docs/TEST_REPORT.md) for the dated test count, coverage, commands, locked synthetic metrics, local Docker network limitation, and remote evidence.
 
 ## Core guarantees
 
